@@ -1,6 +1,8 @@
 
 document.addEventListener("DOMContentLoaded", function(event) {
 
+//Le .s sont en lien avec le snap.svg
+
 //Le jeu
 class Jeu {
     constructor(_idSvg, _idPointage) {
@@ -26,6 +28,11 @@ class Jeu {
             this.pomme = undefined;
         }
 
+        if(this.serpent !== undefined) {
+            this.serpent.supprimeSerpent();
+            this.serpent = undefined;
+        }
+
     }
 
     affichagePointage(_lePointage) {
@@ -48,6 +55,9 @@ class Serpent {
         //Longueur du serpent
         this.serpentLongueur = 1;
         this.tableauCarreSerpent = [];
+
+        this.touche = false;
+
         this.vitesse = 250;
         this.timing = setInterval(this.controleSerpent.bind(this), this.vitesse);
 
@@ -89,17 +99,54 @@ class Serpent {
         var nextX = this.currentX + this.nextMoveX;
         var nextY = this.currentY + this.nextMoveY;
 
-        this.dessineCarre(nextX, nextY);
-        this.currentX = nextX;
-        this.currentY = nextY;
+        //Vérifier si touche à lui-même
+        this.tableauCarreSerpent.forEach(function(element) {
+            if(nextX === element[1] && nextY === element[2]) {
+                console.log("Touche moi-même!");
+                this.leJeu.finPartie();
+                this.touche = true;
+            }
+        }.bind(this));
+
+        //Vérifier si touche limites du contour
+        if(nextY < 0 || nextX < 0 || nextY > this.leJeu.grandeurGrille-1 || nextX > this.leJeu.grandeurGrille-1) {
+            console.log("Touche limite!");
+            this.leJeu.finPartie();
+            this.touche = true;
+        }
+
+        if(!this.touche) {
+            if(this.currentX === this.leJeu.pomme.pomme[1] && this.currentY === this.leJeu.pomme.pomme[2]) {
+                this.serpentLongueur++;
+
+                this.leJeu.affichagePointage(this.serpentLongueur);
+                this.leJeu.pomme.supprimerPomme();
+                this.leJeu.pomme.ajoutePomme();
+            }
+
+            this.dessineCarre(nextX, nextY);
+            this.currentX = nextX;
+            this.currentY = nextY;
+        }
     }
 
     dessineCarre(x, y) {
-
+        var unCarre = [this.leJeu.s.rect(x * this.leJeu.grandeurCarre, y * this.leJeu.grandeurCarre, this.leJeu.grandeurCarre, this.leJeu.grandeurCarre), x, y];
+        this.tableauCarreSerpent.push(unCarre);
+        if(this.tableauCarreSerpent.length > this.serpentLongueur) {
+            this.tableauCarreSerpent[0] [0].remove();
+            this.tableauCarreSerpent.shift();
+        }
     }
 
     supprimeSerpent() {
+        //Arrêter de vérifier s'il touche lui-même
+        clearInterval(this.timing);
 
+        while(this.tableauCarreSerpent.length > 0) {
+            this.tableauCarreSerpent[0] [0].remove();
+            this.tableauCarreSerpent.shift();
+        }
     }
 
 }
