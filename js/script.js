@@ -17,7 +17,7 @@ class Jeu {
         this.affichagePointage(1);
 
         this.pomme = new Pomme(this);
-        this. serpent = new Serpent();
+        this. serpent = new Serpent(this);
     }
 
     finPartie() {
@@ -35,8 +35,30 @@ class Jeu {
 
 //Le serpent
 class Serpent {
-    constructor() {
+    constructor(_leJeu) {
         console.log("Création du serpent");
+
+        this.leJeu = _leJeu;
+    }
+
+    verifTouche(evt){
+
+    }
+
+    deplacement(dirCode) {
+
+    }
+
+    controleSerpent() {
+
+    }
+
+    dessineCarre(x, y) {
+
+    }
+
+    supprimeSerpent() {
+        
     }
 
 }
