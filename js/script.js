@@ -39,18 +39,59 @@ class Serpent {
         console.log("Création du serpent");
 
         this.leJeu = _leJeu;
+
+        this.currentX = -1;
+        this.currentY = 0;
+        this.nextMoveX = 1;
+        this.nextMoveY = 0;
+
+        //Longueur du serpent
+        this.serpentLongueur = 1;
+        this.tableauCarreSerpent = [];
+        this.vitesse = 250;
+        this.timing = setInterval(this.controleSerpent.bind(this), this.vitesse);
+
+        //Bind permet que le this reste dans le contexte vu que le document est celui qui appelle verifTouche via un Event, donc sans le .bind, une erreur se produit
+        document.addEventListener("keydown", this.verifTouche.bind(this))
     }
 
-    verifTouche(evt){
+    verifTouche(_evt){
+        var evt = _evt;
 
+        console.log(evt.keyCode);
+        this.deplacement(evt.keyCode);
     }
 
     deplacement(dirCode) {
+        switch(dirCode) {
+            case 37:
+                this.nextMoveX = -1;
+                this.nextMoveY = 0;
+                break;
+            case 38:
+                this.nextMoveX = 0;
+                this.nextMoveY = -1;
+                break;
+            case 39:
+                this.nextMoveX = 1;
+                this.nextMoveY = 0;
+                break;
+            case 40:
+                this.nextMoveX = 0;
+                this.nextMoveY = 1;
+                break;
+        }
 
+        //console.log(this.nextMoveX, this.nextMoveY);
     }
 
     controleSerpent() {
+        var nextX = this.currentX + this.nextMoveX;
+        var nextY = this.currentY + this.nextMoveY;
 
+        this.dessineCarre(nextX, nextY);
+        this.currentX = nextX;
+        this.currentY = nextY;
     }
 
     dessineCarre(x, y) {
@@ -58,7 +99,7 @@ class Serpent {
     }
 
     supprimeSerpent() {
-        
+
     }
 
 }
