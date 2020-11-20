@@ -13,14 +13,18 @@ class Jeu {
     }
 
     nouvellePartie() {
+        this.finPartie();
         this.affichagePointage(1);
 
-        this.pomme = new Pomme();
-
+        this.pomme = new Pomme(this);
         this. serpent = new Serpent();
     }
 
     finPartie() {
+        if(this.pomme !== undefined) {
+            this.pomme.supprimerPomme();
+            this.pomme = undefined;
+        }
 
     }
 
@@ -34,12 +38,30 @@ class Serpent {
     constructor() {
         console.log("Création du serpent");
     }
+
 }
 
 //La pomme
 class Pomme {
-    constructor() {
+    constructor(_leJeu) {
         console.log("Création de la pomme");
+
+        this.leJeu = _leJeu;
+        this.pomme = [];
+        this.ajoutePomme();
+    }
+
+    ajoutePomme() {
+        var posX = Math.floor( Math.random() * this.leJeu.grandeurGrille );
+        var posY = Math.floor( Math.random() * this.leJeu.grandeurGrille );
+
+        //Faire un carré représentant la pomme
+        this.pomme = [this.leJeu.s.rect(posX * this.leJeu.grandeurCarre, posY * this.leJeu.grandeurCarre, this.leJeu.grandeurCarre, this.leJeu.grandeurCarre).attr({fill: 'red'}), posX, posY];
+    }
+
+    supprimerPomme() {
+        //Le 0 entre les crochets représente l'élément de la pomme
+        this.pomme[0].remove();
     }
 }
 
